@@ -1,0 +1,2189 @@
+{
+  "manifest_schema_version": 3,
+  "sdk_version": "5.13.1",
+  "app_id": "sap-concur-connector",
+  "version": "0.1.0",
+  "name": "SAP Concur",
+  "description": "Official Imperal connector for SAP Concur (C29. Expense Management & Corporate Cards). Full CRUD on core entities, webhooks, and compliance audits.",
+  "icon": "icon.svg",
+  "actions_explicit": true,
+  "system": false,
+  "capabilities": [
+    "sap_concur:manage"
+  ],
+  "tools": [
+    {
+      "name": "connect_sap_concur",
+      "description": "Connect SAP Concur account via credentials.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "create:connection"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "label": {
+            "default": "",
+            "description": "Friendly connection label, e.g. Acme SAP Concur.",
+            "title": "Label",
+            "type": "string"
+          },
+          "api_key": {
+            "description": "Corporate Expense API Key or OAuth Token.",
+            "title": "Api Key",
+            "type": "string"
+          },
+          "base_url": {
+            "default": "",
+            "description": "Optional custom base URL or instance domain.",
+            "title": "Base Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "api_key"
+        ],
+        "title": "ConnectParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "label": {
+            "default": "",
+            "description": "Friendly connection label, e.g. Acme SAP Concur.",
+            "title": "Label",
+            "type": "string"
+          },
+          "api_key": {
+            "description": "Corporate Expense API Key or OAuth Token.",
+            "title": "Api Key",
+            "type": "string"
+          },
+          "base_url": {
+            "default": "",
+            "description": "Optional custom base URL or instance domain.",
+            "title": "Base Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "api_key"
+        ],
+        "title": "ConnectParams",
+        "type": "object"
+      },
+      "event": "sap-concur-connector.connect_sap_concur",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "list_connections",
+      "description": "List connected SAP Concur accounts.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "description": "Empty parameter model.",
+        "properties": {},
+        "title": "NoParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "description": "Empty parameter model.",
+        "properties": {},
+        "title": "NoParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "disconnect_sap_concur",
+      "description": "Disconnect SAP Concur account.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "delete:connection"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier (empty uses active connection).",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "title": "ConnectionIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier (empty uses active connection).",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "title": "ConnectionIdParams",
+        "type": "object"
+      },
+      "event": "sap-concur-connector.disconnect_sap_concur",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "list_expenses",
+      "description": "List expenses (Out-of-pocket expense transaction or claim).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return (1-100).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "cursor": {
+            "default": "",
+            "description": "Pagination cursor or page token.",
+            "title": "Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListExpenseParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return (1-100).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "cursor": {
+            "default": "",
+            "description": "Pagination cursor or page token.",
+            "title": "Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListExpenseParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "get_expense",
+      "description": "Read details of one expense.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "expense_id": {
+            "description": "Unique identifier of the expense.",
+            "title": "Expense Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "expense_id"
+        ],
+        "title": "GetExpenseParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "expense_id": {
+            "description": "Unique identifier of the expense.",
+            "title": "Expense Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "expense_id"
+        ],
+        "title": "GetExpenseParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "create_expense",
+      "description": "Create a new expense.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name or title of the record.",
+            "title": "Name",
+            "type": "string"
+          },
+          "details": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Detailed attributes and payload.",
+            "title": "Details"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "CreateExpenseParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name or title of the record.",
+            "title": "Name",
+            "type": "string"
+          },
+          "details": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Detailed attributes and payload.",
+            "title": "Details"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "CreateExpenseParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "update_expense",
+      "description": "Update an existing expense.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "expense_id": {
+            "description": "Unique identifier of the expense.",
+            "title": "Expense Id",
+            "type": "string"
+          },
+          "fields": {
+            "additionalProperties": true,
+            "description": "Attributes to update.",
+            "title": "Fields",
+            "type": "object"
+          }
+        },
+        "required": [
+          "expense_id",
+          "fields"
+        ],
+        "title": "UpdateExpenseParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "expense_id": {
+            "description": "Unique identifier of the expense.",
+            "title": "Expense Id",
+            "type": "string"
+          },
+          "fields": {
+            "additionalProperties": true,
+            "description": "Attributes to update.",
+            "title": "Fields",
+            "type": "object"
+          }
+        },
+        "required": [
+          "expense_id",
+          "fields"
+        ],
+        "title": "UpdateExpenseParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "delete_expense",
+      "description": "Permanently delete a expense.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "expense_id": {
+            "description": "Unique identifier of the expense.",
+            "title": "Expense Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "expense_id"
+        ],
+        "title": "DeleteExpenseParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "expense_id": {
+            "description": "Unique identifier of the expense.",
+            "title": "Expense Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "expense_id"
+        ],
+        "title": "DeleteExpenseParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "list_cards",
+      "description": "List cards (Corporate virtual or physical card).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return (1-100).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "cursor": {
+            "default": "",
+            "description": "Pagination cursor or page token.",
+            "title": "Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListCardParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return (1-100).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "cursor": {
+            "default": "",
+            "description": "Pagination cursor or page token.",
+            "title": "Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListCardParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "get_card",
+      "description": "Read details of one card.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "card_id": {
+            "description": "Unique identifier of the card.",
+            "title": "Card Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "card_id"
+        ],
+        "title": "GetCardParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "card_id": {
+            "description": "Unique identifier of the card.",
+            "title": "Card Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "card_id"
+        ],
+        "title": "GetCardParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "create_card",
+      "description": "Execute create_card operation on SAP Concur API.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name or title of the record.",
+            "title": "Name",
+            "type": "string"
+          },
+          "details": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Detailed attributes and payload.",
+            "title": "Details"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "CreateCardParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name or title of the record.",
+            "title": "Name",
+            "type": "string"
+          },
+          "details": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Detailed attributes and payload.",
+            "title": "Details"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "CreateCardParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "update_card",
+      "description": "Update an existing card.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "card_id": {
+            "description": "Unique identifier of the card.",
+            "title": "Card Id",
+            "type": "string"
+          },
+          "fields": {
+            "additionalProperties": true,
+            "description": "Attributes to update.",
+            "title": "Fields",
+            "type": "object"
+          }
+        },
+        "required": [
+          "card_id",
+          "fields"
+        ],
+        "title": "UpdateCardParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "card_id": {
+            "description": "Unique identifier of the card.",
+            "title": "Card Id",
+            "type": "string"
+          },
+          "fields": {
+            "additionalProperties": true,
+            "description": "Attributes to update.",
+            "title": "Fields",
+            "type": "object"
+          }
+        },
+        "required": [
+          "card_id",
+          "fields"
+        ],
+        "title": "UpdateCardParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "delete_card",
+      "description": "Permanently delete a card.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "card_id": {
+            "description": "Unique identifier of the card.",
+            "title": "Card Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "card_id"
+        ],
+        "title": "DeleteCardParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "card_id": {
+            "description": "Unique identifier of the card.",
+            "title": "Card Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "card_id"
+        ],
+        "title": "DeleteCardParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "list_reports",
+      "description": "List reports (Aggregated expense report awaiting manager review).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return (1-100).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "cursor": {
+            "default": "",
+            "description": "Pagination cursor or page token.",
+            "title": "Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListReportParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return (1-100).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "cursor": {
+            "default": "",
+            "description": "Pagination cursor or page token.",
+            "title": "Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListReportParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "get_report",
+      "description": "Read details of one report.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "report_id": {
+            "description": "Unique identifier of the report.",
+            "title": "Report Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "report_id"
+        ],
+        "title": "GetReportParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "report_id": {
+            "description": "Unique identifier of the report.",
+            "title": "Report Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "report_id"
+        ],
+        "title": "GetReportParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "create_report",
+      "description": "Create a new report.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name or title of the record.",
+            "title": "Name",
+            "type": "string"
+          },
+          "details": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Detailed attributes and payload.",
+            "title": "Details"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "CreateReportParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name or title of the record.",
+            "title": "Name",
+            "type": "string"
+          },
+          "details": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Detailed attributes and payload.",
+            "title": "Details"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "CreateReportParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "update_report",
+      "description": "Update an existing report.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "report_id": {
+            "description": "Unique identifier of the report.",
+            "title": "Report Id",
+            "type": "string"
+          },
+          "fields": {
+            "additionalProperties": true,
+            "description": "Attributes to update.",
+            "title": "Fields",
+            "type": "object"
+          }
+        },
+        "required": [
+          "report_id",
+          "fields"
+        ],
+        "title": "UpdateReportParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "report_id": {
+            "description": "Unique identifier of the report.",
+            "title": "Report Id",
+            "type": "string"
+          },
+          "fields": {
+            "additionalProperties": true,
+            "description": "Attributes to update.",
+            "title": "Fields",
+            "type": "object"
+          }
+        },
+        "required": [
+          "report_id",
+          "fields"
+        ],
+        "title": "UpdateReportParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "delete_report",
+      "description": "Permanently delete a report.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "report_id": {
+            "description": "Unique identifier of the report.",
+            "title": "Report Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "report_id"
+        ],
+        "title": "DeleteReportParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "report_id": {
+            "description": "Unique identifier of the report.",
+            "title": "Report Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "report_id"
+        ],
+        "title": "DeleteReportParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "list_policies",
+      "description": "List policies (Spend limit and travel compliance policy).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return (1-100).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "cursor": {
+            "default": "",
+            "description": "Pagination cursor or page token.",
+            "title": "Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListPolicyParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return (1-100).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "cursor": {
+            "default": "",
+            "description": "Pagination cursor or page token.",
+            "title": "Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListPolicyParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "get_policy",
+      "description": "Read details of one policy.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "policy_id": {
+            "description": "Unique identifier of the policy.",
+            "title": "Policy Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "policy_id"
+        ],
+        "title": "GetPolicyParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "policy_id": {
+            "description": "Unique identifier of the policy.",
+            "title": "Policy Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "policy_id"
+        ],
+        "title": "GetPolicyParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "create_policy",
+      "description": "Create a new policy.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name or title of the record.",
+            "title": "Name",
+            "type": "string"
+          },
+          "details": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Detailed attributes and payload.",
+            "title": "Details"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "CreatePolicyParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name or title of the record.",
+            "title": "Name",
+            "type": "string"
+          },
+          "details": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Detailed attributes and payload.",
+            "title": "Details"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "CreatePolicyParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "update_policy",
+      "description": "Update an existing policy.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "policy_id": {
+            "description": "Unique identifier of the policy.",
+            "title": "Policy Id",
+            "type": "string"
+          },
+          "fields": {
+            "additionalProperties": true,
+            "description": "Attributes to update.",
+            "title": "Fields",
+            "type": "object"
+          }
+        },
+        "required": [
+          "policy_id",
+          "fields"
+        ],
+        "title": "UpdatePolicyParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "policy_id": {
+            "description": "Unique identifier of the policy.",
+            "title": "Policy Id",
+            "type": "string"
+          },
+          "fields": {
+            "additionalProperties": true,
+            "description": "Attributes to update.",
+            "title": "Fields",
+            "type": "object"
+          }
+        },
+        "required": [
+          "policy_id",
+          "fields"
+        ],
+        "title": "UpdatePolicyParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "delete_policy",
+      "description": "Permanently delete a policy.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "policy_id": {
+            "description": "Unique identifier of the policy.",
+            "title": "Policy Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "policy_id"
+        ],
+        "title": "DeletePolicyParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "policy_id": {
+            "description": "Unique identifier of the policy.",
+            "title": "Policy Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "policy_id"
+        ],
+        "title": "DeletePolicyParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "list_merchants",
+      "description": "List merchants (Vendor and merchant categorization record).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return (1-100).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "cursor": {
+            "default": "",
+            "description": "Pagination cursor or page token.",
+            "title": "Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListMerchantParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return (1-100).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "cursor": {
+            "default": "",
+            "description": "Pagination cursor or page token.",
+            "title": "Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListMerchantParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "get_merchant",
+      "description": "Read details of one merchant.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "merchant_id": {
+            "description": "Unique identifier of the merchant.",
+            "title": "Merchant Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "merchant_id"
+        ],
+        "title": "GetMerchantParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "merchant_id": {
+            "description": "Unique identifier of the merchant.",
+            "title": "Merchant Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "merchant_id"
+        ],
+        "title": "GetMerchantParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "create_merchant",
+      "description": "Create a new merchant.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name or title of the record.",
+            "title": "Name",
+            "type": "string"
+          },
+          "details": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Detailed attributes and payload.",
+            "title": "Details"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "CreateMerchantParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name or title of the record.",
+            "title": "Name",
+            "type": "string"
+          },
+          "details": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Detailed attributes and payload.",
+            "title": "Details"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "CreateMerchantParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "update_merchant",
+      "description": "Update an existing merchant.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "merchant_id": {
+            "description": "Unique identifier of the merchant.",
+            "title": "Merchant Id",
+            "type": "string"
+          },
+          "fields": {
+            "additionalProperties": true,
+            "description": "Attributes to update.",
+            "title": "Fields",
+            "type": "object"
+          }
+        },
+        "required": [
+          "merchant_id",
+          "fields"
+        ],
+        "title": "UpdateMerchantParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "merchant_id": {
+            "description": "Unique identifier of the merchant.",
+            "title": "Merchant Id",
+            "type": "string"
+          },
+          "fields": {
+            "additionalProperties": true,
+            "description": "Attributes to update.",
+            "title": "Fields",
+            "type": "object"
+          }
+        },
+        "required": [
+          "merchant_id",
+          "fields"
+        ],
+        "title": "UpdateMerchantParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "delete_merchant",
+      "description": "Permanently delete a merchant.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "merchant_id": {
+            "description": "Unique identifier of the merchant.",
+            "title": "Merchant Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "merchant_id"
+        ],
+        "title": "DeleteMerchantParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "merchant_id": {
+            "description": "Unique identifier of the merchant.",
+            "title": "Merchant Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "merchant_id"
+        ],
+        "title": "DeleteMerchantParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "list_reimbursements",
+      "description": "List reimbursements (Disbursement payment to employee).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return (1-100).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "cursor": {
+            "default": "",
+            "description": "Pagination cursor or page token.",
+            "title": "Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListReimbursementParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return (1-100).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "cursor": {
+            "default": "",
+            "description": "Pagination cursor or page token.",
+            "title": "Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListReimbursementParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "get_reimbursement",
+      "description": "Read details of one reimbursement.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "reimbursement_id": {
+            "description": "Unique identifier of the reimbursement.",
+            "title": "Reimbursement Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reimbursement_id"
+        ],
+        "title": "GetReimbursementParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "reimbursement_id": {
+            "description": "Unique identifier of the reimbursement.",
+            "title": "Reimbursement Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reimbursement_id"
+        ],
+        "title": "GetReimbursementParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "create_reimbursement",
+      "description": "Create a new reimbursement.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name or title of the record.",
+            "title": "Name",
+            "type": "string"
+          },
+          "details": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Detailed attributes and payload.",
+            "title": "Details"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "CreateReimbursementParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name or title of the record.",
+            "title": "Name",
+            "type": "string"
+          },
+          "details": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Detailed attributes and payload.",
+            "title": "Details"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "CreateReimbursementParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "update_reimbursement",
+      "description": "Update an existing reimbursement.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "reimbursement_id": {
+            "description": "Unique identifier of the reimbursement.",
+            "title": "Reimbursement Id",
+            "type": "string"
+          },
+          "fields": {
+            "additionalProperties": true,
+            "description": "Attributes to update.",
+            "title": "Fields",
+            "type": "object"
+          }
+        },
+        "required": [
+          "reimbursement_id",
+          "fields"
+        ],
+        "title": "UpdateReimbursementParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "reimbursement_id": {
+            "description": "Unique identifier of the reimbursement.",
+            "title": "Reimbursement Id",
+            "type": "string"
+          },
+          "fields": {
+            "additionalProperties": true,
+            "description": "Attributes to update.",
+            "title": "Fields",
+            "type": "object"
+          }
+        },
+        "required": [
+          "reimbursement_id",
+          "fields"
+        ],
+        "title": "UpdateReimbursementParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "delete_reimbursement",
+      "description": "Permanently delete a reimbursement.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "reimbursement_id": {
+            "description": "Unique identifier of the reimbursement.",
+            "title": "Reimbursement Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reimbursement_id"
+        ],
+        "title": "DeleteReimbursementParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "reimbursement_id": {
+            "description": "Unique identifier of the reimbursement.",
+            "title": "Reimbursement Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reimbursement_id"
+        ],
+        "title": "DeleteReimbursementParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "audit_spend_compliance",
+      "description": "Value-add audit: Scan flagged expenses violating spend limits and missing receipts.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier (empty uses active connection).",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "title": "ConnectionIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier (empty uses active connection).",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "title": "ConnectionIdParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    },
+    {
+      "name": "get_spend_overview",
+      "description": "Value-add audit: Total spend broken down by department, category and merchant.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier (empty uses active connection).",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "title": "ConnectionIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Connection identifier (empty uses active connection).",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "title": "ConnectionIdParams",
+        "type": "object"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "tool_sap-concur-connector_chat"
+    }
+  ],
+  "signals": [],
+  "schedules": [],
+  "required_scopes": [],
+  "icon_size_bytes": 545,
+  "lifecycle": {
+    "health_check": {
+      "interval_sec": 60
+    }
+  },
+  "panels": [
+    {
+      "panel_id": "sap_concur_sidebar",
+      "slot": "left",
+      "title": "",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": false
+    },
+    {
+      "panel_id": "__sap_concur_settings",
+      "slot": "center",
+      "title": "",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": false
+    }
+  ],
+  "pricing": {
+    "model": "per_action",
+    "currency": "tokens",
+    "monthly_price": 0,
+    "revenue_split_dev": 70,
+    "free_tools": [
+      "connect_sap_concur",
+      "list_connections",
+      "disconnect_sap_concur"
+    ],
+    "tool_prices": {
+      "connect_sap_concur": 0,
+      "list_connections": 0,
+      "disconnect_sap_concur": 0,
+      "list_expenses": 8,
+      "get_expense": 8,
+      "create_expense": 16,
+      "update_expense": 16,
+      "delete_expense": 16,
+      "list_cards": 8,
+      "get_card": 8,
+      "create_card": 16,
+      "update_card": 16,
+      "delete_card": 16,
+      "list_reports": 40,
+      "get_report": 40,
+      "create_report": 40,
+      "update_report": 40,
+      "delete_report": 40,
+      "list_policies": 8,
+      "get_policy": 8,
+      "create_policy": 16,
+      "update_policy": 16,
+      "delete_policy": 16,
+      "list_merchants": 8,
+      "get_merchant": 8,
+      "create_merchant": 16,
+      "update_merchant": 16,
+      "delete_merchant": 16,
+      "list_reimbursements": 8,
+      "get_reimbursement": 8,
+      "create_reimbursement": 16,
+      "update_reimbursement": 16,
+      "delete_reimbursement": 16,
+      "audit_spend_compliance": 40,
+      "get_spend_overview": 40
+    },
+    "notes": "Canonical pricing aligned with PRICING_POLICY.md (standard scale 0/8/16/20/40/60)."
+  }
+}
