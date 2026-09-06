@@ -1,4 +1,4 @@
-"""Panel UI for SAP Concur Connector following UI_INTERFACE_STANDARD.md."""
+"""Panel UI for SAP Concur Connector following UI_INTERFACE_STANDARD.md and AUTH_AND_CREDENTIALS_STANDARD.md."""
 from __future__ import annotations
 from imperal_sdk import ui
 from app import ext
@@ -18,64 +18,94 @@ def _help_modal() -> ui.UINode:
         title="Connecting SAP Concur",
         children=[
             ui.Text(
-                "1. Sign in to your SAP Concur dashboard and navigate to API/Integration settings.\n"
-                "2. Generate an API Key, Token or OAuth credential.\n"
-                "3. Enter the details in the form below and click Connect.",
+                "1. Sign in to your SAP Concur account and navigate to API/Integration or OAuth settings.\n2. Choose your preferred authentication method (OAuth SSO, API Key / Personal Token, or Client Credentials / Service Account).\n3. Authorize or enter your credentials above and click Connect.",
                 variant="body"
             )
         ]
     )
 
 @ext.panel("sap_concur_sidebar", slot="left")
-async def main_panel(ctx) -> ui.UINode:
-    form = ui.Form(
-        submit_label="Connect SAP Concur",
-        action=ui.Call("connect_sap_concur"),
+async def sap_concur_sidebar(ctx, **kwargs) -> ui.UINode:
+    return ui.Stack(
+        direction="v",
+        gap=3,
+        align="stretch",
         children=[
+            ui.Text("SAP Concur", variant="heading"),
+            ui.Stack(
+                direction="v",
+                gap=1,
+                align="stretch",
+                children=[
+                    ui.Text("Manage your SAP Concur connections and integrations.", variant="caption"),
+                ]
+            ),
+            ui.Divider(),
             ui.Stack(
                 direction="v",
                 gap=2,
+                align="stretch",
                 children=[
-                    ui.Stack(
-                        direction="v",
-                        gap=1,
+                    ui.Button(
+                        "Sign in with SAP Concur (OAuth / SSO)",
+                        variant="primary",
+                        size="sm",
+                        icon="login"
+                    ),
+                    ui.Divider(),
+                    ui.Text("Or connect via API Key or Service Account", variant="caption"),
+                    ui.Form(
+                        submit_label="Connect SAP Concur",
+                        action=ui.Call("connect_sap_concur"),
                         children=[
-                            ui.Text("Connection Label", variant="label"),
-                            ui.Input(param_name="label", placeholder="e.g. Production Account"),
+                            ui.Stack(
+                                direction="v",
+                                gap=2,
+                                align="stretch",
+                                children=[
+                                    ui.Stack(
+                                        direction="v",
+                                        gap=1,
+                                        align="stretch",
+                                        children=[
+                                            ui.Text("Authentication Method", variant="label"),
+                                            ui.Select(
+                                                param_name="auth_mode",
+                                                value="api_key",
+                                                options=[
+                                                    {"label": "API Key / Personal Access Token", "value": "api_key"},
+                                                    {"label": "OAuth 2.0 Bearer Token", "value": "oauth"},
+                                                    {"label": "Client Credentials (Service Account / Machine-to-Machine)", "value": "client_credentials"},
+                                                ]
+                                            ),
+                                        ]
+                                    ),
+                                    ui.Stack(
+                                        direction="v",
+                                        gap=1,
+                                        align="stretch",
+                                        children=[
+                                            ui.Text("Connection Label", variant="label"),
+                                            ui.Input(param_name="label", placeholder="e.g. Production SAP Concur"),
+                                        ]
+                                    ),
+                                    ui.Stack(
+                                        direction="v",
+                                        gap=1,
+                                        align="stretch",
+                                        children=[
+                                            ui.Text("API Key / Access Token", variant="label"),
+                                            ui.Input(param_name="api_key", placeholder="Paste API Key, Bearer or Access Token"),
+                                        ]
+                                    ),
+                                ]
+                            )
                         ]
                     ),
-                    ui.Stack(
-                        direction="v",
-                        gap=1,
-                        children=[
-                            ui.Text("API Key / Access Token", variant="label"),
-                            ui.Input(param_name="api_key", placeholder="Paste API Key or Token"),
-                        ]
-                    ),
-                    ui.Stack(
-                        direction="v",
-                        gap=1,
-                        children=[
-                            ui.Text("Custom Base URL (optional)", variant="label"),
-                            ui.Input(param_name="base_url", placeholder="Leave empty for default"),
-                        ]
-                    )
                 ]
-            )
-        ]
-    )
-
-    return ui.Stack(
-        direction="v",
-        gap=2,
-        children=[
-            ui.Heading("SAP Concur Connector", level=3),
-            ui.Text("Connect and manage your SAP Concur workspace.", variant="caption"),
-            ui.Divider(),
-            form,
-            ui.Divider(),
+            ),
             _help_modal(),
-            ui.Divider(),
-            _settings_button()
+            ui.Spacer(),
+            _settings_button(),
         ]
     )
