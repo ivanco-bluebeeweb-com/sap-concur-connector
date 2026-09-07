@@ -62,7 +62,7 @@ async def connect_sap_concur(params: ConnectParams, ctx) -> ActionResult[Connect
     for c in conns: c["is_active"] = False
     conns.append(record)
     await _save_connections(ctx, conns)
-    return ActionResult.ok(ConnectionRecord(id=cid, label=record["label"], masked_key=_mask(params.api_key), base_url=params.base_url, is_active=True))
+    return ActionResult.success(ConnectionRecord(id=cid, label=record["label"], masked_key=_mask(params.api_key), base_url=params.base_url, is_active=True), summary="Sap concur connected.")
 
 @chat.function(
     "list_connections",
@@ -75,7 +75,7 @@ async def list_connections(params: NoParams, ctx) -> ActionResult[ConnectionList
     """Execute list_connections lifecycle handler."""
     conns = await _load_connections(ctx)
     records = [ConnectionRecord(id=c["id"], label=c["label"], masked_key=_mask(c.get("api_key", "")), base_url=c.get("base_url", ""), is_active=c.get("is_active", False)) for c in conns]
-    return ActionResult.ok(ConnectionList(connections=records, total=len(records)))
+    return ActionResult.success(ConnectionList(connections=records, total=len(records)), summary="Connections listed.")
 
 @chat.function(
     "disconnect_sap_concur",
@@ -96,4 +96,4 @@ async def disconnect_sap_concur(params: ConnectionIdParams, ctx) -> ActionResult
     if new_conns and target.get("is_active"):
         new_conns[0]["is_active"] = True
     await _save_connections(ctx, new_conns)
-    return ActionResult.ok(DeleteResult(id=target["id"], deleted=True, message="Disconnected successfully"))
+    return ActionResult.success(DeleteResult(id=target["id"], deleted=True, message="Disconnected successfully"), summary="Sap concur disconnected.")

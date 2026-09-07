@@ -26,7 +26,7 @@ async def list_expenses(params: ListExpenseParams, ctx) -> ActionResult[ExpenseL
     if err: return err
     data = await client.list_expenses(limit=params.limit, cursor=params.cursor)
     items = [ExpenseRecord(id=str(it.get("id", "")), name=str(it.get("name", "")), status=str(it.get("status", "active")), raw=it) for it in data.get("items", [])]
-    return ActionResult.ok(ExpenseList(items=items, total=data.get("total", len(items)), next_cursor=data.get("next_cursor")))
+    return ActionResult.success(ExpenseList(items=items, total=data.get("total", len(items)), next_cursor=data.get("next_cursor")), summary="Expenses listed.")
 
 @chat.function(
     "get_expense",
@@ -40,7 +40,7 @@ async def get_expense(params: GetExpenseParams, ctx) -> ActionResult[ExpenseReco
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     data = await client.get_expense(params.expense_id)
-    return ActionResult.ok(ExpenseRecord(id=str(data.get("id", params.expense_id)), name=str(data.get("name", "")), status=str(data.get("status", "active")), raw=data))
+    return ActionResult.success(ExpenseRecord(id=str(data.get("id", params.expense_id)), name=str(data.get("name", "")), status=str(data.get("status", "active")), raw=data), summary="Expense retrieved.")
 
 @chat.function(
     "create_expense",
@@ -54,7 +54,7 @@ async def create_expense(params: CreateExpenseParams, ctx) -> ActionResult[Expen
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     data = await client.create_expense(name=params.name, details=params.details)
-    return ActionResult.ok(ExpenseRecord(id=str(data.get("id", "")), name=str(data.get("name", params.name)), status="active", raw=data))
+    return ActionResult.success(ExpenseRecord(id=str(data.get("id", "")), name=str(data.get("name", params.name)), status="active", raw=data), summary="Expense created.")
 
 @chat.function(
     "update_expense",
@@ -68,7 +68,7 @@ async def update_expense(params: UpdateExpenseParams, ctx) -> ActionResult[Expen
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     data = await client.update_expense(params.expense_id, params.fields)
-    return ActionResult.ok(ExpenseRecord(id=params.expense_id, name=str(data.get("name", "")), status="updated", raw=data))
+    return ActionResult.success(ExpenseRecord(id=params.expense_id, name=str(data.get("name", "")), status="updated", raw=data), summary="Expense updated.")
 
 @chat.function(
     "delete_expense",
@@ -82,7 +82,7 @@ async def delete_expense(params: DeleteExpenseParams, ctx) -> ActionResult[Delet
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     ok = await client.delete_expense(params.expense_id)
-    return ActionResult.ok(DeleteResult(id=params.expense_id, deleted=ok, message="expense deleted"))
+    return ActionResult.success(DeleteResult(id=params.expense_id, deleted=ok, message="expense deleted"), summary="Expense deleted.")
 
 @chat.function(
     "list_cards",
@@ -97,7 +97,7 @@ async def list_cards(params: ListCardParams, ctx) -> ActionResult[CardList]:
     if err: return err
     data = await client.list_cards(limit=params.limit, cursor=params.cursor)
     items = [CardRecord(id=str(it.get("id", "")), name=str(it.get("name", "")), status=str(it.get("status", "active")), raw=it) for it in data.get("items", [])]
-    return ActionResult.ok(CardList(items=items, total=data.get("total", len(items)), next_cursor=data.get("next_cursor")))
+    return ActionResult.success(CardList(items=items, total=data.get("total", len(items)), next_cursor=data.get("next_cursor")), summary="Cards listed.")
 
 @chat.function(
     "get_card",
@@ -111,7 +111,7 @@ async def get_card(params: GetCardParams, ctx) -> ActionResult[CardRecord]:
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     data = await client.get_card(params.card_id)
-    return ActionResult.ok(CardRecord(id=str(data.get("id", params.card_id)), name=str(data.get("name", "")), status=str(data.get("status", "active")), raw=data))
+    return ActionResult.success(CardRecord(id=str(data.get("id", params.card_id)), name=str(data.get("name", "")), status=str(data.get("status", "active")), raw=data), summary="Card retrieved.")
 
 @chat.function(
     "create_card",
@@ -125,7 +125,7 @@ async def create_card(params: CreateCardParams, ctx) -> ActionResult[CardRecord]
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     data = await client.create_card(name=params.name, details=params.details)
-    return ActionResult.ok(CardRecord(id=str(data.get("id", "")), name=str(data.get("name", params.name)), status="active", raw=data))
+    return ActionResult.success(CardRecord(id=str(data.get("id", "")), name=str(data.get("name", params.name)), status="active", raw=data), summary="Card created.")
 
 @chat.function(
     "update_card",
@@ -139,7 +139,7 @@ async def update_card(params: UpdateCardParams, ctx) -> ActionResult[CardRecord]
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     data = await client.update_card(params.card_id, params.fields)
-    return ActionResult.ok(CardRecord(id=params.card_id, name=str(data.get("name", "")), status="updated", raw=data))
+    return ActionResult.success(CardRecord(id=params.card_id, name=str(data.get("name", "")), status="updated", raw=data), summary="Card updated.")
 
 @chat.function(
     "delete_card",
@@ -153,7 +153,7 @@ async def delete_card(params: DeleteCardParams, ctx) -> ActionResult[DeleteResul
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     ok = await client.delete_card(params.card_id)
-    return ActionResult.ok(DeleteResult(id=params.card_id, deleted=ok, message="card deleted"))
+    return ActionResult.success(DeleteResult(id=params.card_id, deleted=ok, message="card deleted"), summary="Card deleted.")
 
 @chat.function(
     "list_reports",
@@ -168,7 +168,7 @@ async def list_reports(params: ListReportParams, ctx) -> ActionResult[ReportList
     if err: return err
     data = await client.list_reports(limit=params.limit, cursor=params.cursor)
     items = [ReportRecord(id=str(it.get("id", "")), name=str(it.get("name", "")), status=str(it.get("status", "active")), raw=it) for it in data.get("items", [])]
-    return ActionResult.ok(ReportList(items=items, total=data.get("total", len(items)), next_cursor=data.get("next_cursor")))
+    return ActionResult.success(ReportList(items=items, total=data.get("total", len(items)), next_cursor=data.get("next_cursor")), summary="Reports listed.")
 
 @chat.function(
     "get_report",
@@ -182,7 +182,7 @@ async def get_report(params: GetReportParams, ctx) -> ActionResult[ReportRecord]
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     data = await client.get_report(params.report_id)
-    return ActionResult.ok(ReportRecord(id=str(data.get("id", params.report_id)), name=str(data.get("name", "")), status=str(data.get("status", "active")), raw=data))
+    return ActionResult.success(ReportRecord(id=str(data.get("id", params.report_id)), name=str(data.get("name", "")), status=str(data.get("status", "active")), raw=data), summary="Report retrieved.")
 
 @chat.function(
     "create_report",
@@ -196,7 +196,7 @@ async def create_report(params: CreateReportParams, ctx) -> ActionResult[ReportR
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     data = await client.create_report(name=params.name, details=params.details)
-    return ActionResult.ok(ReportRecord(id=str(data.get("id", "")), name=str(data.get("name", params.name)), status="active", raw=data))
+    return ActionResult.success(ReportRecord(id=str(data.get("id", "")), name=str(data.get("name", params.name)), status="active", raw=data), summary="Report created.")
 
 @chat.function(
     "update_report",
@@ -210,7 +210,7 @@ async def update_report(params: UpdateReportParams, ctx) -> ActionResult[ReportR
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     data = await client.update_report(params.report_id, params.fields)
-    return ActionResult.ok(ReportRecord(id=params.report_id, name=str(data.get("name", "")), status="updated", raw=data))
+    return ActionResult.success(ReportRecord(id=params.report_id, name=str(data.get("name", "")), status="updated", raw=data), summary="Report updated.")
 
 @chat.function(
     "delete_report",
@@ -224,7 +224,7 @@ async def delete_report(params: DeleteReportParams, ctx) -> ActionResult[DeleteR
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     ok = await client.delete_report(params.report_id)
-    return ActionResult.ok(DeleteResult(id=params.report_id, deleted=ok, message="report deleted"))
+    return ActionResult.success(DeleteResult(id=params.report_id, deleted=ok, message="report deleted"), summary="Report deleted.")
 
 @chat.function(
     "list_policies",
@@ -239,7 +239,7 @@ async def list_policies(params: ListPolicyParams, ctx) -> ActionResult[PolicyLis
     if err: return err
     data = await client.list_policies(limit=params.limit, cursor=params.cursor)
     items = [PolicyRecord(id=str(it.get("id", "")), name=str(it.get("name", "")), status=str(it.get("status", "active")), raw=it) for it in data.get("items", [])]
-    return ActionResult.ok(PolicyList(items=items, total=data.get("total", len(items)), next_cursor=data.get("next_cursor")))
+    return ActionResult.success(PolicyList(items=items, total=data.get("total", len(items)), next_cursor=data.get("next_cursor")), summary="Policies listed.")
 
 @chat.function(
     "get_policy",
@@ -253,7 +253,7 @@ async def get_policy(params: GetPolicyParams, ctx) -> ActionResult[PolicyRecord]
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     data = await client.get_policy(params.policy_id)
-    return ActionResult.ok(PolicyRecord(id=str(data.get("id", params.policy_id)), name=str(data.get("name", "")), status=str(data.get("status", "active")), raw=data))
+    return ActionResult.success(PolicyRecord(id=str(data.get("id", params.policy_id)), name=str(data.get("name", "")), status=str(data.get("status", "active")), raw=data), summary="Policy retrieved.")
 
 @chat.function(
     "create_policy",
@@ -267,7 +267,7 @@ async def create_policy(params: CreatePolicyParams, ctx) -> ActionResult[PolicyR
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     data = await client.create_policy(name=params.name, details=params.details)
-    return ActionResult.ok(PolicyRecord(id=str(data.get("id", "")), name=str(data.get("name", params.name)), status="active", raw=data))
+    return ActionResult.success(PolicyRecord(id=str(data.get("id", "")), name=str(data.get("name", params.name)), status="active", raw=data), summary="Policy created.")
 
 @chat.function(
     "update_policy",
@@ -281,7 +281,7 @@ async def update_policy(params: UpdatePolicyParams, ctx) -> ActionResult[PolicyR
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     data = await client.update_policy(params.policy_id, params.fields)
-    return ActionResult.ok(PolicyRecord(id=params.policy_id, name=str(data.get("name", "")), status="updated", raw=data))
+    return ActionResult.success(PolicyRecord(id=params.policy_id, name=str(data.get("name", "")), status="updated", raw=data), summary="Policy updated.")
 
 @chat.function(
     "delete_policy",
@@ -295,7 +295,7 @@ async def delete_policy(params: DeletePolicyParams, ctx) -> ActionResult[DeleteR
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     ok = await client.delete_policy(params.policy_id)
-    return ActionResult.ok(DeleteResult(id=params.policy_id, deleted=ok, message="policy deleted"))
+    return ActionResult.success(DeleteResult(id=params.policy_id, deleted=ok, message="policy deleted"), summary="Policy deleted.")
 
 @chat.function(
     "list_merchants",
@@ -310,7 +310,7 @@ async def list_merchants(params: ListMerchantParams, ctx) -> ActionResult[Mercha
     if err: return err
     data = await client.list_merchants(limit=params.limit, cursor=params.cursor)
     items = [MerchantRecord(id=str(it.get("id", "")), name=str(it.get("name", "")), status=str(it.get("status", "active")), raw=it) for it in data.get("items", [])]
-    return ActionResult.ok(MerchantList(items=items, total=data.get("total", len(items)), next_cursor=data.get("next_cursor")))
+    return ActionResult.success(MerchantList(items=items, total=data.get("total", len(items)), next_cursor=data.get("next_cursor")), summary="Merchants listed.")
 
 @chat.function(
     "get_merchant",
@@ -324,7 +324,7 @@ async def get_merchant(params: GetMerchantParams, ctx) -> ActionResult[MerchantR
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     data = await client.get_merchant(params.merchant_id)
-    return ActionResult.ok(MerchantRecord(id=str(data.get("id", params.merchant_id)), name=str(data.get("name", "")), status=str(data.get("status", "active")), raw=data))
+    return ActionResult.success(MerchantRecord(id=str(data.get("id", params.merchant_id)), name=str(data.get("name", "")), status=str(data.get("status", "active")), raw=data), summary="Merchant retrieved.")
 
 @chat.function(
     "create_merchant",
@@ -338,7 +338,7 @@ async def create_merchant(params: CreateMerchantParams, ctx) -> ActionResult[Mer
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     data = await client.create_merchant(name=params.name, details=params.details)
-    return ActionResult.ok(MerchantRecord(id=str(data.get("id", "")), name=str(data.get("name", params.name)), status="active", raw=data))
+    return ActionResult.success(MerchantRecord(id=str(data.get("id", "")), name=str(data.get("name", params.name)), status="active", raw=data), summary="Merchant created.")
 
 @chat.function(
     "update_merchant",
@@ -352,7 +352,7 @@ async def update_merchant(params: UpdateMerchantParams, ctx) -> ActionResult[Mer
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     data = await client.update_merchant(params.merchant_id, params.fields)
-    return ActionResult.ok(MerchantRecord(id=params.merchant_id, name=str(data.get("name", "")), status="updated", raw=data))
+    return ActionResult.success(MerchantRecord(id=params.merchant_id, name=str(data.get("name", "")), status="updated", raw=data), summary="Merchant updated.")
 
 @chat.function(
     "delete_merchant",
@@ -366,7 +366,7 @@ async def delete_merchant(params: DeleteMerchantParams, ctx) -> ActionResult[Del
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     ok = await client.delete_merchant(params.merchant_id)
-    return ActionResult.ok(DeleteResult(id=params.merchant_id, deleted=ok, message="merchant deleted"))
+    return ActionResult.success(DeleteResult(id=params.merchant_id, deleted=ok, message="merchant deleted"), summary="Merchant deleted.")
 
 @chat.function(
     "list_reimbursements",
@@ -381,7 +381,7 @@ async def list_reimbursements(params: ListReimbursementParams, ctx) -> ActionRes
     if err: return err
     data = await client.list_reimbursements(limit=params.limit, cursor=params.cursor)
     items = [ReimbursementRecord(id=str(it.get("id", "")), name=str(it.get("name", "")), status=str(it.get("status", "active")), raw=it) for it in data.get("items", [])]
-    return ActionResult.ok(ReimbursementList(items=items, total=data.get("total", len(items)), next_cursor=data.get("next_cursor")))
+    return ActionResult.success(ReimbursementList(items=items, total=data.get("total", len(items)), next_cursor=data.get("next_cursor")), summary="Reimbursements listed.")
 
 @chat.function(
     "get_reimbursement",
@@ -395,7 +395,7 @@ async def get_reimbursement(params: GetReimbursementParams, ctx) -> ActionResult
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     data = await client.get_reimbursement(params.reimbursement_id)
-    return ActionResult.ok(ReimbursementRecord(id=str(data.get("id", params.reimbursement_id)), name=str(data.get("name", "")), status=str(data.get("status", "active")), raw=data))
+    return ActionResult.success(ReimbursementRecord(id=str(data.get("id", params.reimbursement_id)), name=str(data.get("name", "")), status=str(data.get("status", "active")), raw=data), summary="Reimbursement retrieved.")
 
 @chat.function(
     "create_reimbursement",
@@ -409,7 +409,7 @@ async def create_reimbursement(params: CreateReimbursementParams, ctx) -> Action
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     data = await client.create_reimbursement(name=params.name, details=params.details)
-    return ActionResult.ok(ReimbursementRecord(id=str(data.get("id", "")), name=str(data.get("name", params.name)), status="active", raw=data))
+    return ActionResult.success(ReimbursementRecord(id=str(data.get("id", "")), name=str(data.get("name", params.name)), status="active", raw=data), summary="Reimbursement created.")
 
 @chat.function(
     "update_reimbursement",
@@ -423,7 +423,7 @@ async def update_reimbursement(params: UpdateReimbursementParams, ctx) -> Action
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     data = await client.update_reimbursement(params.reimbursement_id, params.fields)
-    return ActionResult.ok(ReimbursementRecord(id=params.reimbursement_id, name=str(data.get("name", "")), status="updated", raw=data))
+    return ActionResult.success(ReimbursementRecord(id=params.reimbursement_id, name=str(data.get("name", "")), status="updated", raw=data), summary="Reimbursement updated.")
 
 @chat.function(
     "delete_reimbursement",
@@ -437,7 +437,7 @@ async def delete_reimbursement(params: DeleteReimbursementParams, ctx) -> Action
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     ok = await client.delete_reimbursement(params.reimbursement_id)
-    return ActionResult.ok(DeleteResult(id=params.reimbursement_id, deleted=ok, message="reimbursement deleted"))
+    return ActionResult.success(DeleteResult(id=params.reimbursement_id, deleted=ok, message="reimbursement deleted"), summary="Reimbursement deleted.")
 
 @chat.function(
     "audit_spend_compliance",
@@ -451,11 +451,11 @@ async def audit_spend_compliance(params: ConnectionIdParams, ctx) -> ActionResul
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
-    return ActionResult.ok(AuditSpendComplianceResult(
+    return ActionResult.success(AuditSpendComplianceResult(
         summary="SAP Concur Scan flagged expenses violating spend limits and missing receipts",
         metrics={"status": "healthy", "scanned_at": now_iso, "alerts": 0},
         timestamp=now_iso
-    ))
+    ), summary="Spend compliance audit ready.")
 
 @chat.function(
     "get_spend_overview",
@@ -469,8 +469,8 @@ async def get_spend_overview(params: ConnectionIdParams, ctx) -> ActionResult[Ge
     client, err = await _get_client(ctx, params.connection_id)
     if err: return err
     now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
-    return ActionResult.ok(GetSpendOverviewResult(
+    return ActionResult.success(GetSpendOverviewResult(
         summary="SAP Concur Total spend broken down by department, category and merchant",
         metrics={"status": "healthy", "scanned_at": now_iso, "alerts": 0},
         timestamp=now_iso
-    ))
+    ), summary="Spend overview retrieved.")
