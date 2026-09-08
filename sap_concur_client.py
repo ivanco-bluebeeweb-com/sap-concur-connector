@@ -106,7 +106,8 @@ class SAPConcurClient:
             except Exception as e:
                 return {"status": "error", "code": "NETWORK_ERROR", "message": self._sanitize_msg(str(e))}
 
-    async def create_expense(self, data: dict[str, Any]) -> dict[str, Any]:
+    async def create_expense(self, data: dict[str, Any] = None, name: str = "", details: dict[str, Any] = None, **kwargs) -> dict[str, Any]:
+        if data is None: data = {"name": name, **(details or {})}
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             try:
                 resp = await client.post(f"{self.base_url}/expensereports/v4/expenses", headers=self.headers, json=data)
@@ -158,7 +159,8 @@ class SAPConcurClient:
             except Exception as e:
                 return {"status": "error", "code": "NETWORK_ERROR", "message": self._sanitize_msg(str(e))}
 
-    async def create_card(self, data: dict[str, Any]) -> dict[str, Any]:
+    async def create_card(self, data: dict[str, Any] = None, name: str = "", details: dict[str, Any] = None, **kwargs) -> dict[str, Any]:
+        if data is None: data = {"name": name, **(details or {})}
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             try:
                 resp = await client.post(f"{self.base_url}/expensereports/v4/cards", headers=self.headers, json=data)
@@ -210,7 +212,8 @@ class SAPConcurClient:
             except Exception as e:
                 return {"status": "error", "code": "NETWORK_ERROR", "message": self._sanitize_msg(str(e))}
 
-    async def create_report(self, data: dict[str, Any]) -> dict[str, Any]:
+    async def create_report(self, data: dict[str, Any] = None, name: str = "", details: dict[str, Any] = None, **kwargs) -> dict[str, Any]:
+        if data is None: data = {"name": name, **(details or {})}
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             try:
                 resp = await client.post(f"{self.base_url}/expensereports/v4/reports", headers=self.headers, json=data)
@@ -262,7 +265,8 @@ class SAPConcurClient:
             except Exception as e:
                 return {"status": "error", "code": "NETWORK_ERROR", "message": self._sanitize_msg(str(e))}
 
-    async def create_policy(self, data: dict[str, Any]) -> dict[str, Any]:
+    async def create_policy(self, data: dict[str, Any] = None, name: str = "", details: dict[str, Any] = None, **kwargs) -> dict[str, Any]:
+        if data is None: data = {"name": name, **(details or {})}
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             try:
                 resp = await client.post(f"{self.base_url}/expensereports/v4/policies", headers=self.headers, json=data)
@@ -314,7 +318,8 @@ class SAPConcurClient:
             except Exception as e:
                 return {"status": "error", "code": "NETWORK_ERROR", "message": self._sanitize_msg(str(e))}
 
-    async def create_merchant(self, data: dict[str, Any]) -> dict[str, Any]:
+    async def create_merchant(self, data: dict[str, Any] = None, name: str = "", details: dict[str, Any] = None, **kwargs) -> dict[str, Any]:
+        if data is None: data = {"name": name, **(details or {})}
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             try:
                 resp = await client.post(f"{self.base_url}/receipts/v4/merchants", headers=self.headers, json=data)
@@ -366,7 +371,8 @@ class SAPConcurClient:
             except Exception as e:
                 return {"status": "error", "code": "NETWORK_ERROR", "message": self._sanitize_msg(str(e))}
 
-    async def create_reimbursement(self, data: dict[str, Any]) -> dict[str, Any]:
+    async def create_reimbursement(self, data: dict[str, Any] = None, name: str = "", details: dict[str, Any] = None, **kwargs) -> dict[str, Any]:
+        if data is None: data = {"name": name, **(details or {})}
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             try:
                 resp = await client.post(f"{self.base_url}/expensereports/v4/reimbursements", headers=self.headers, json=data)
